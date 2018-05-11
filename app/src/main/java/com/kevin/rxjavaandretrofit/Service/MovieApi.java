@@ -10,7 +10,7 @@ import retrofit2.http.Query;
  * Created by Kevinkj_Lin on 2018/5/11.
  */
 
-public interface ApiService {
+public interface MovieApi {
     @GET("top250")
     Observable<Movie> getTopMovie(@Query("start") int start, @Query("count") int count);
 }
