@@ -7,11 +7,9 @@ import android.util.Log;
 import com.kevin.rxjavaandretrofit.Model.Movie;
 import com.kevin.rxjavaandretrofit.Model.Subjects;
 import com.kevin.rxjavaandretrofit.Service.ApiMethods;
+import com.kevin.rxjavaandretrofit.Service.MyObserver;
 
 import java.util.List;
-
-import io.reactivex.Observer;
-import io.reactivex.disposables.Disposable;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -22,11 +20,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Observer<Movie> observer = new Observer<Movie>() {
-            @Override
-            public void onSubscribe(Disposable d) {
-                Log.d(TAG, "onSubscribe: ");
-            }
+        // 換成 MyObserver，封裝 Observer 的 onSubscribe, onError, onComplete
+        MyObserver.ObserverOnNextListener<Movie> listener = new MyObserver.ObserverOnNextListener<Movie>() {
             @Override
             public void onNext(Movie movie) {
                 Log.d(TAG, "onNext: " + movie.getTitle());
@@ -35,15 +30,7 @@ public class MainActivity extends AppCompatActivity {
                     Log.d(TAG, "onNext: " + sub.getId() + "," + sub.getYear() + "," + sub.getTitle());
                 }
             }
-            @Override
-            public void onError(Throwable e) {
-                Log.e(TAG, "onError: " + e.getMessage());
-            }
-            @Override
-            public void onComplete() {
-                Log.d(TAG, "onComplete: Over!");
-            }
         };
-        ApiMethods.getTopMovie(observer, 0, 10);
+        ApiMethods.getTopMovie(new MyObserver<Movie>(this, listener), 0, 10);
     }
 }
